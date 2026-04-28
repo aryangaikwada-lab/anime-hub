@@ -1,0 +1,2643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AniVerse — Ultimate Entertainment Hub</title>
+
+  <!-- Google Fonts: Anime-style + Futuristic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ============================================================
+       CSS VARIABLES & RESET
+    ============================================================ */
+    :root {
+      --bg-void:        #050508;
+      --bg-deep:        #0a0a14;
+      --bg-panel:       #0e0e1c;
+      --bg-glass:       rgba(15, 15, 30, 0.65);
+      --bg-card:        rgba(18, 18, 36, 0.8);
+
+      --neon-violet:    #9b30ff;
+      --neon-cyan:      #00e5ff;
+      --neon-pink:      #ff2d78;
+      --neon-gold:      #ffd700;
+      --neon-green:     #00ff9d;
+
+      --text-primary:   #e8e8ff;
+      --text-secondary: #8888bb;
+      --text-muted:     #444466;
+
+      --border-glow:    rgba(155, 48, 255, 0.4);
+      --border-subtle:  rgba(255, 255, 255, 0.06);
+
+      --radius-sm:  6px;
+      --radius-md: 12px;
+      --radius-lg: 20px;
+
+      --font-display: 'Orbitron', monospace;
+      --font-ui:      'Rajdhani', sans-serif;
+      --font-body:    'Noto Sans JP', sans-serif;
+
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-void);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+      cursor: default;
+    }
+
+    /* ============================================================
+       SCROLLBAR
+    ============================================================ */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--neon-violet); border-radius: 3px; }
+
+    /* ============================================================
+       ANIMATED BACKGROUND CANVAS
+    ============================================================ */
+    #bg-canvas {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Grid overlay */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      background-image:
+        linear-gradient(rgba(155, 48, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(155, 48, 255, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      pointer-events: none;
+    }
+
+    /* ============================================================
+       LAYOUT WRAPPER
+    ============================================================ */
+    .wrapper {
+      position: relative;
+      z-index: 2;
+      min-height: 100vh;
+    }
+
+    /* ============================================================
+       NAVBAR
+    ============================================================ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 68px;
+      display: flex;
+      align-items: center;
+      padding: 0 2rem;
+      gap: 2rem;
+      background: rgba(5, 5, 10, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid var(--border-subtle);
+      box-shadow: 0 2px 40px rgba(155, 48, 255, 0.1);
+    }
+
+    /* Logo */
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-shadow: none;
+      white-space: nowrap;
+      filter: drop-shadow(0 0 12px rgba(155, 48, 255, 0.6));
+      flex-shrink: 0;
+    }
+
+    .nav-logo span {
+      background: linear-gradient(135deg, var(--neon-pink), var(--neon-gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* Nav links */
+    .nav-links {
+      display: flex;
+      gap: 0.25rem;
+      list-style: none;
+      margin: 0 auto 0 2rem;
+    }
+
+    .nav-links a {
+      display: block;
+      padding: 0.4rem 1rem;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 0.9rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 2px; left: 50%; right: 50%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--neon-violet), var(--neon-cyan));
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    .nav-links a:hover { color: var(--text-primary); }
+    .nav-links a:hover::after { left: 10%; right: 10%; }
+    .nav-links a.active { color: var(--neon-cyan); }
+    .nav-links a.active::after { left: 10%; right: 10%; }
+
+    /* Search bar */
+    .nav-search {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .nav-search input {
+      width: 220px;
+      padding: 0.45rem 1rem 0.45rem 2.4rem;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border-subtle);
+      border-radius: 50px;
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 0.85rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .nav-search input::placeholder { color: var(--text-muted); }
+
+    .nav-search input:focus {
+      border-color: var(--neon-violet);
+      background: rgba(155, 48, 255, 0.08);
+      box-shadow: 0 0 16px rgba(155, 48, 255, 0.25);
+      width: 260px;
+    }
+
+    .nav-search svg {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px; height: 14px;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    /* Hamburger */
+    .nav-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 24px; height: 2px;
+      background: var(--text-primary);
+      border-radius: 2px;
+      transition: var(--transition);
+    }
+
+    /* Mobile nav */
+    .nav-mobile {
+      display: none;
+      position: fixed;
+      top: 68px; left: 0; right: 0;
+      background: rgba(8, 8, 18, 0.97);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+      padding: 1.5rem 2rem;
+      z-index: 99;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .nav-mobile.open { display: flex; }
+
+    .nav-mobile a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-family: var(--font-ui);
+      font-weight: 600;
+      font-size: 1.1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--border-subtle);
+      transition: var(--transition);
+    }
+
+    .nav-mobile a:hover { color: var(--neon-cyan); padding-left: 0.5rem; }
+
+    .nav-mobile .nav-search input { width: 100%; }
+
+    /* ============================================================
+       HERO SECTION
+    ============================================================ */
+    #hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 8rem 2rem 4rem;
+      overflow: hidden;
+    }
+
+    /* Background layers */
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 50% 0%,   rgba(155, 48, 255, 0.18) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 40% at 80% 60%,  rgba(0, 229, 255,  0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 40% 30% at 20% 70%,  rgba(255, 45, 120, 0.10) 0%, transparent 50%);
+      pointer-events: none;
+    }
+
+    /* Floating orbs */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(60px);
+      animation: float-orb linear infinite;
+      pointer-events: none;
+    }
+
+    .orb-1 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(155,48,255,0.25), transparent 70%);
+      top: -150px; left: -100px;
+      animation-duration: 18s;
+    }
+
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(0,229,255,0.2), transparent 70%);
+      bottom: 0; right: -80px;
+      animation-duration: 22s;
+      animation-delay: -6s;
+    }
+
+    .orb-3 {
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(255,45,120,0.15), transparent 70%);
+      top: 40%; left: 60%;
+      animation-duration: 15s;
+      animation-delay: -10s;
+    }
+
+    @keyframes float-orb {
+      0%   { transform: translate(0, 0) scale(1); }
+      25%  { transform: translate(30px, -40px) scale(1.05); }
+      50%  { transform: translate(-20px, 30px) scale(0.95); }
+      75%  { transform: translate(40px, 20px) scale(1.03); }
+      100% { transform: translate(0, 0) scale(1); }
+    }
+
+    /* Hero content */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 1rem;
+      background: rgba(155, 48, 255, 0.12);
+      border: 1px solid rgba(155, 48, 255, 0.4);
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--neon-violet);
+      margin-bottom: 2rem;
+      animation: fade-up 0.8s ease both;
+    }
+
+    .hero-badge .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--neon-cyan);
+      animation: pulse-dot 1.5s ease infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.2rem, 6vw, 5.5rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      animation: fade-up 0.8s 0.1s ease both;
+    }
+
+    .hero-title .line-1 {
+      display: block;
+      background: linear-gradient(135deg, #fff 30%, var(--neon-violet) 70%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-title .line-2 {
+      display: block;
+      background: linear-gradient(135deg, var(--neon-cyan) 0%, var(--neon-pink) 50%, var(--neon-gold) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 30px rgba(0, 229, 255, 0.5));
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-secondary);
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+      line-height: 1.7;
+      animation: fade-up 0.8s 0.2s ease both;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+      animation: fade-up 0.8s 0.3s ease both;
+    }
+
+    /* Glowing CTA button */
+    .btn-glow {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2.2rem;
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-pink));
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 0 25px rgba(155, 48, 255, 0.5), 0 4px 20px rgba(0,0,0,0.4);
+      overflow: hidden;
+    }
+
+    .btn-glow::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-violet));
+      opacity: 0;
+      transition: var(--transition);
+    }
+
+    .btn-glow:hover {
+      transform: translateY(-3px) scale(1.03);
+      box-shadow: 0 0 40px rgba(155, 48, 255, 0.7), 0 8px 30px rgba(0,0,0,0.4);
+    }
+
+    .btn-glow:hover::before { opacity: 1; }
+    .btn-glow span { position: relative; z-index: 1; }
+
+    .btn-outline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-outline:hover {
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Hero stats */
+    .hero-stats {
+      display: flex;
+      gap: 3rem;
+      margin-top: 4rem;
+      animation: fade-up 0.8s 0.4s ease both;
+    }
+
+    .stat-item { text-align: center; }
+
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--neon-cyan), var(--neon-violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    /* Scroll indicator */
+    .scroll-hint {
+      position: absolute;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: fade-in 1s 1s both;
+    }
+
+    .scroll-hint .arrow {
+      width: 20px; height: 20px;
+      border-right: 2px solid var(--neon-violet);
+      border-bottom: 2px solid var(--neon-violet);
+      transform: rotate(45deg);
+      animation: bounce-down 1.5s ease infinite;
+    }
+
+    @keyframes bounce-down {
+      0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.5; }
+      50%       { transform: rotate(45deg) translateY(5px); opacity: 1; }
+    }
+
+    /* ============================================================
+       MAIN CONTENT AREA (sidebar + cards)
+    ============================================================ */
+    #main {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 5rem 2rem 4rem;
+    }
+
+    /* ============================================================
+       SIDEBAR
+    ============================================================ */
+    .sidebar {
+      position: sticky;
+      top: 88px;
+      height: fit-content;
+    }
+
+    .sidebar-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      backdrop-filter: blur(12px);
+    }
+
+    .sidebar-title {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--neon-violet);
+      margin-bottom: 1rem;
+    }
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.6rem 0.75rem;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: var(--transition);
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-decoration: none;
+    }
+
+    .sidebar-item:hover,
+    .sidebar-item.active {
+      background: rgba(155, 48, 255, 0.1);
+      color: var(--text-primary);
+    }
+
+    .sidebar-item.active { color: var(--neon-cyan); }
+
+    .sidebar-badge {
+      font-size: 0.65rem;
+      padding: 0.15rem 0.5rem;
+      border-radius: 50px;
+      font-weight: 700;
+    }
+
+    .badge-fire  { background: rgba(255, 100, 0, 0.2); color: #ff6400; }
+    .badge-new   { background: rgba(0, 229, 255, 0.15); color: var(--neon-cyan); }
+    .badge-hot   { background: rgba(255, 45, 120, 0.15); color: var(--neon-pink); }
+    .badge-count { background: rgba(255,255,255,0.07); color: var(--text-secondary); }
+
+    /* Mini genre tags */
+    .genre-tags { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+
+    .genre-tag {
+      padding: 0.25rem 0.75rem;
+      border-radius: 50px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      transition: var(--transition);
+    }
+
+    .genre-tag:hover {
+      border-color: var(--neon-violet);
+      color: var(--neon-violet);
+      background: rgba(155, 48, 255, 0.08);
+    }
+
+    /* ============================================================
+       CARDS SECTION
+    ============================================================ */
+    .cards-area {}
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .section-title .accent {
+      display: inline-block;
+      width: 4px; height: 20px;
+      background: linear-gradient(180deg, var(--neon-violet), var(--neon-cyan));
+      border-radius: 2px;
+    }
+
+    .section-see-all {
+      font-size: 0.8rem;
+      color: var(--neon-violet);
+      text-decoration: none;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      transition: var(--transition);
+    }
+
+    .section-see-all:hover { color: var(--neon-cyan); }
+
+    /* Platform cards grid */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 3.5rem;
+    }
+
+    /* Individual card */
+    .card {
+      position: relative;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                  box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                  border-color 0.35s ease;
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      transform: translateY(-6px) scale(1.015);
+      border-color: var(--card-accent, var(--neon-violet));
+      box-shadow:
+        0 0 30px var(--card-shadow, rgba(155, 48, 255, 0.25)),
+        0 20px 40px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Card image area */
+    .card-img {
+      position: relative;
+      height: 160px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+
+    .card-img img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .card:hover .card-img img { transform: scale(1.08); }
+
+    /* Overlay gradient */
+    .card-img::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        180deg,
+        transparent 40%,
+        rgba(10, 10, 20, 0.9) 100%
+      );
+    }
+
+    /* Platform logo badge */
+    .card-logo {
+      position: absolute;
+      top: 12px; left: 12px;
+      z-index: 2;
+      width: 44px; height: 44px;
+      border-radius: var(--radius-sm);
+      background: rgba(0,0,0,0.6);
+      border: 1px solid rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+    }
+
+    /* Category tag */
+    .card-cat {
+      position: absolute;
+      top: 12px; right: 12px;
+      z-index: 2;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+      border-radius: 50px;
+      background: rgba(0,0,0,0.55);
+      border: 1px solid rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+    }
+
+    /* Card body */
+    .card-body {
+      padding: 1.1rem 1.25rem 1.25rem;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-family: var(--font-display);
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      margin-bottom: 0.4rem;
+      color: var(--text-primary);
+    }
+
+    .card-desc {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+      flex: 1;
+    }
+
+    /* Card footer */
+    .card-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 1rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .card-meta {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .card-meta svg {
+      width: 12px; height: 12px;
+    }
+
+    .card-cta {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--card-accent, var(--neon-violet));
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: gap var(--transition);
+    }
+
+    .card:hover .card-cta { gap: 0.55rem; }
+
+    /* Glow line at bottom on hover */
+    .card::before {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--card-accent, var(--neon-violet)), transparent);
+      transform: scaleX(0);
+      transition: transform 0.35s ease;
+    }
+
+    .card:hover::before { transform: scaleX(1); }
+
+    /* ============================================================
+       FEATURED BANNER (wide card)
+    ============================================================ */
+    .featured-banner {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 3.5rem;
+      height: 220px;
+      display: flex;
+      align-items: flex-end;
+      cursor: pointer;
+      border: 1px solid var(--border-subtle);
+      transition: transform var(--transition), box-shadow var(--transition);
+    }
+
+    .featured-banner:hover {
+      transform: scale(1.008);
+      box-shadow: 0 0 50px rgba(0, 229, 255, 0.2);
+    }
+
+    .featured-banner img {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+
+    .featured-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(5,5,15,0.9) 0%, rgba(5,5,15,0.5) 50%, transparent 100%);
+    }
+
+    .featured-content {
+      position: relative;
+      z-index: 2;
+      padding: 2rem;
+    }
+
+    .featured-tag {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--neon-cyan);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      border-radius: 50px;
+      padding: 0.2rem 0.7rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .featured-title {
+      font-family: var(--font-display);
+      font-size: 1.6rem;
+      font-weight: 900;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.4rem;
+    }
+
+    .featured-sub {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    /* ============================================================
+       TRENDING ROW (horizontal scroll)
+    ============================================================ */
+    .trending-row {
+      display: flex;
+      gap: 1rem;
+      overflow-x: auto;
+      padding-bottom: 0.5rem;
+      margin-bottom: 3.5rem;
+      scrollbar-width: thin;
+      scrollbar-color: var(--neon-violet) transparent;
+    }
+
+    .trending-row::-webkit-scrollbar { height: 3px; }
+    .trending-row::-webkit-scrollbar-thumb { background: var(--neon-violet); border-radius: 3px; }
+
+    .trending-chip {
+      flex-shrink: 0;
+      padding: 0.6rem 1.2rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 50px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      white-space: nowrap;
+    }
+
+    .trending-chip:hover {
+      border-color: var(--neon-violet);
+      color: var(--text-primary);
+      background: rgba(155, 48, 255, 0.08);
+    }
+
+    .trending-chip.active {
+      border-color: var(--neon-cyan);
+      color: var(--neon-cyan);
+      background: rgba(0, 229, 255, 0.07);
+    }
+
+    .chip-rank {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      color: var(--neon-gold);
+    }
+
+    /* ============================================================
+       FOOTER
+    ============================================================ */
+    footer {
+      position: relative;
+      background: var(--bg-deep);
+      border-top: 1px solid var(--border-subtle);
+      padding: 3rem 2rem 2rem;
+      margin-top: 2rem;
+    }
+
+    footer::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 10%; right: 10%;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--neon-violet), transparent);
+    }
+
+    .footer-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr auto;
+      gap: 3rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .footer-brand .nav-logo {
+      font-size: 1.2rem;
+      display: block;
+      margin-bottom: 0.75rem;
+    }
+
+    .footer-brand p {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .footer-col-title {
+      font-family: var(--font-display);
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--neon-violet);
+      margin-bottom: 1rem;
+    }
+
+    .footer-links {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.88rem;
+      transition: var(--transition);
+    }
+
+    .footer-links a:hover { color: var(--neon-cyan); padding-left: 0.25rem; }
+
+    /* Social icons */
+    .social-icons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .social-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: var(--transition);
+      text-decoration: none;
+    }
+
+    .social-icon:hover {
+      border-color: var(--neon-violet);
+      background: rgba(155, 48, 255, 0.1);
+      transform: translateY(-3px);
+      box-shadow: 0 4px 20px rgba(155, 48, 255, 0.25);
+    }
+
+    .footer-bottom {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-bottom p {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-bottom span {
+      color: var(--neon-violet);
+    }
+
+    /* ============================================================
+       AUTH MODAL
+    ============================================================ */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(0, 0, 0, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal-backdrop.open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal {
+      background: #0d0d1e;
+      border: 1px solid rgba(155, 48, 255, 0.35);
+      border-radius: var(--radius-lg);
+      width: 100%;
+      max-width: 420px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 0 60px rgba(155, 48, 255, 0.25), 0 30px 60px rgba(0,0,0,0.6);
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      position: relative;
+    }
+
+    .modal-backdrop.open .modal {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem; right: 1.25rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color var(--transition);
+    }
+
+    .modal-close:hover { color: var(--neon-pink); }
+
+    .modal-logo {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 0.3rem;
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      filter: drop-shadow(0 0 10px rgba(155,48,255,0.5));
+    }
+
+    .modal-tagline {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      margin-bottom: 2rem;
+    }
+
+    /* Tabs */
+    .modal-tabs {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 50px;
+      padding: 3px;
+      margin-bottom: 1.75rem;
+    }
+
+    .modal-tab {
+      flex: 1;
+      padding: 0.5rem;
+      text-align: center;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 50px;
+      transition: var(--transition);
+    }
+
+    .modal-tab.active {
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-pink));
+      color: #fff;
+      box-shadow: 0 0 20px rgba(155,48,255,0.4);
+    }
+
+    /* Form */
+    .auth-form { display: none; flex-direction: column; gap: 1rem; }
+    .auth-form.show { display: flex; }
+
+    .form-group { display: flex; flex-direction: column; gap: 0.4rem; }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+    }
+
+    .form-input {
+      padding: 0.7rem 1rem;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      color: var(--text-primary);
+      font-family: var(--font-ui);
+      font-size: 0.95rem;
+      outline: none;
+      transition: var(--transition);
+    }
+
+    .form-input:focus {
+      border-color: var(--neon-violet);
+      background: rgba(155,48,255,0.06);
+      box-shadow: 0 0 15px rgba(155,48,255,0.2);
+    }
+
+    .form-input::placeholder { color: var(--text-muted); }
+
+    .form-error {
+      font-size: 0.78rem;
+      color: var(--neon-pink);
+      display: none;
+      margin-top: -0.3rem;
+    }
+
+    .form-error.show { display: block; }
+
+    .btn-submit {
+      padding: 0.8rem;
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-pink));
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 0 20px rgba(155,48,255,0.35);
+      margin-top: 0.25rem;
+    }
+
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 35px rgba(155,48,255,0.55);
+    }
+
+    .btn-submit:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .modal-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      margin: 0.25rem 0;
+    }
+
+    .modal-divider::before,
+    .modal-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-subtle);
+    }
+
+    /* ============================================================
+       REDIRECT CONFIRM MODAL
+    ============================================================ */
+    .redirect-modal {
+      max-width: 380px;
+      text-align: center;
+    }
+
+    .redirect-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .redirect-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .redirect-url {
+      font-size: 0.8rem;
+      color: var(--neon-cyan);
+      margin-bottom: 1.5rem;
+      word-break: break-all;
+    }
+
+    .redirect-actions {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .btn-redirect-go {
+      padding: 0.65rem 1.5rem;
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-cyan));
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      box-shadow: 0 0 20px rgba(155,48,255,0.3);
+    }
+
+    .btn-redirect-go:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 30px rgba(155,48,255,0.5);
+    }
+
+    .btn-redirect-cancel {
+      padding: 0.65rem 1.5rem;
+      background: transparent;
+      color: var(--text-secondary);
+      font-family: var(--font-display);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: 1px solid var(--border-subtle);
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .btn-redirect-cancel:hover {
+      border-color: var(--neon-pink);
+      color: var(--neon-pink);
+    }
+
+    /* ============================================================
+       TOAST NOTIFICATION
+    ============================================================ */
+    #toast-container {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 600;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      pointer-events: none;
+    }
+
+    .toast {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.8rem 1.25rem;
+      background: #12122a;
+      border: 1px solid var(--border-subtle);
+      border-left: 3px solid var(--neon-violet);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-primary);
+      min-width: 260px;
+      max-width: 340px;
+      animation: toast-in 0.35s ease both;
+    }
+
+    .toast.success { border-left-color: var(--neon-green); }
+    .toast.error   { border-left-color: var(--neon-pink); }
+    .toast.info    { border-left-color: var(--neon-cyan); }
+
+    .toast-icon { font-size: 1.1rem; flex-shrink: 0; }
+    .toast.exit { animation: toast-out 0.3s ease forwards; }
+
+    @keyframes toast-in  { from { opacity:0; transform: translateX(20px); } to { opacity:1; transform: translateX(0); } }
+    @keyframes toast-out { from { opacity:1; transform: translateX(0); } to { opacity:0; transform: translateX(20px); } }
+
+    /* ============================================================
+       NAVBAR USER AREA
+    ============================================================ */
+    .nav-auth-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.4rem 1.1rem;
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-pink));
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: var(--transition);
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 0 0 15px rgba(155,48,255,0.35);
+    }
+
+    .nav-auth-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 25px rgba(155,48,255,0.55);
+    }
+
+    /* User dropdown */
+    .nav-user {
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .nav-avatar {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--neon-violet), var(--neon-cyan));
+      border: 2px solid rgba(155,48,255,0.5);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.9rem;
+      font-weight: 700;
+      font-family: var(--font-display);
+      color: #fff;
+      transition: var(--transition);
+      box-shadow: 0 0 15px rgba(155,48,255,0.35);
+    }
+
+    .nav-avatar:hover {
+      box-shadow: 0 0 25px rgba(155,48,255,0.6);
+      transform: scale(1.05);
+    }
+
+    .user-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      background: #0d0d1e;
+      border: 1px solid rgba(155,48,255,0.3);
+      border-radius: var(--radius-md);
+      padding: 0.5rem;
+      min-width: 200px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(155,48,255,0.1);
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-8px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      z-index: 200;
+    }
+
+    .user-dropdown.open {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    .dropdown-header {
+      padding: 0.6rem 0.75rem 0.75rem;
+      border-bottom: 1px solid var(--border-subtle);
+      margin-bottom: 0.4rem;
+    }
+
+    .dropdown-username {
+      font-family: var(--font-display);
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .dropdown-email {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      padding: 0.55rem 0.75rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .dropdown-item:hover { background: rgba(155,48,255,0.1); color: var(--text-primary); }
+    .dropdown-item.danger:hover { background: rgba(255,45,120,0.1); color: var(--neon-pink); }
+
+    /* ============================================================
+       LOCK OVERLAY on cards when logged out
+    ============================================================ */
+    .card-lock-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      background: rgba(5,5,15,0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity var(--transition);
+      border-radius: var(--radius-lg);
+      pointer-events: none;
+    }
+
+    .card:hover .card-lock-overlay { opacity: 1; }
+
+    .lock-badge {
+      padding: 0.4rem 1rem;
+      background: rgba(155,48,255,0.85);
+      color: #fff;
+      font-family: var(--font-display);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      border-radius: 50px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 20px rgba(155,48,255,0.5);
+    }
+
+    /* ============================================================
+       ANIMATIONS
+    ============================================================ */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Staggered card entrance */
+    .card { animation: fade-up 0.5s ease both; }
+    .cards-grid .card:nth-child(1) { animation-delay: 0.05s; }
+    .cards-grid .card:nth-child(2) { animation-delay: 0.1s; }
+    .cards-grid .card:nth-child(3) { animation-delay: 0.15s; }
+    .cards-grid .card:nth-child(4) { animation-delay: 0.2s; }
+    .cards-grid .card:nth-child(5) { animation-delay: 0.25s; }
+    .cards-grid .card:nth-child(6) { animation-delay: 0.3s; }
+    .cards-grid .card:nth-child(7) { animation-delay: 0.35s; }
+    .cards-grid .card:nth-child(8) { animation-delay: 0.4s; }
+
+    /* Neon text pulse */
+    @keyframes neon-pulse {
+      0%, 100% { text-shadow: 0 0 10px var(--neon-cyan), 0 0 30px rgba(0,229,255,0.4); }
+      50%       { text-shadow: 0 0 20px var(--neon-cyan), 0 0 60px rgba(0,229,255,0.6); }
+    }
+
+    /* ============================================================
+       RESPONSIVE
+    ============================================================ */
+    @media (max-width: 1100px) {
+      #main { grid-template-columns: 200px 1fr; }
+    }
+
+    @media (max-width: 860px) {
+      #main { grid-template-columns: 1fr; }
+      .sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+      .nav-links, .nav-search { display: none; }
+      .nav-toggle { display: flex; margin-left: auto; }
+
+      .footer-inner { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 560px) {
+      nav { padding: 0 1rem; }
+      #hero { padding: 7rem 1.25rem 3rem; }
+      .hero-stats { gap: 1.5rem; flex-wrap: wrap; justify-content: center; }
+      .footer-inner { grid-template-columns: 1fr; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ========================================================
+     ANIMATED BACKGROUND CANVAS
+======================================================== -->
+<canvas id="bg-canvas"></canvas>
+
+<div class="wrapper">
+
+  <!-- ======================================================
+       NAVBAR
+  ====================================================== -->
+  <nav id="navbar">
+    <a class="nav-logo" href="#">ANI<span>VERSE</span></a>
+
+    <ul class="nav-links">
+      <li><a href="#hero" class="active">Home</a></li>
+      <li><a href="#anime-section">Anime</a></li>
+      <li><a href="#movies-section">Movies</a></li>
+      <li><a href="#music-section">Music</a></li>
+      <li><a href="#manga-section">Manga</a></li>
+    </ul>
+
+    <div class="nav-search">
+      <!-- Search icon SVG -->
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+      </svg>
+      <input type="text" placeholder="Search anime, movies..." aria-label="Search" />
+    </div>
+
+    <!-- Auth area (login btn OR user avatar) -->
+    <div id="nav-auth-area">
+      <button class="nav-auth-btn" id="open-auth-modal">⚡ Sign In</button>
+    </div>
+
+    <!-- Mobile hamburger -->
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile nav drawer -->
+  <div class="nav-mobile" id="nav-mobile">
+    <a href="#hero">Home</a>
+    <a href="#anime-section">Anime</a>
+    <a href="#movies-section">Movies</a>
+    <a href="#music-section">Music</a>
+    <a href="#manga-section">Manga</a>
+    <div class="nav-search" style="width:100%; margin-top:0.5rem;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+      </svg>
+      <input type="text" placeholder="Search..." aria-label="Search" style="width:100%;" />
+    </div>
+  </div>
+
+  <!-- ======================================================
+       HERO SECTION
+  ====================================================== -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+
+    <div class="hero-badge">
+      <span class="dot"></span>
+      All Entertainment — One Portal
+    </div>
+
+    <h1 class="hero-title">
+      <span class="line-1">Ultimate</span>
+      <span class="line-2">Entertainment Hub</span>
+    </h1>
+
+    <p class="hero-subtitle">
+      Your gateway to every anime, movie, manga, and music platform —
+      unified in one breathtaking cyberpunk dashboard.
+    </p>
+
+    <div class="hero-actions">
+      <a href="#main" class="btn-glow">
+        <span>⚡ Explore Now</span>
+      </a>
+      <a href="#anime-section" class="btn-outline">
+        🎌 Browse Anime
+      </a>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat-item">
+        <div class="stat-num">12+</div>
+        <div class="stat-label">Platforms</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">50K+</div>
+        <div class="stat-label">Titles</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">4K</div>
+        <div class="stat-label">Ultra HD</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">Fun</div>
+      </div>
+    </div>
+
+    <div class="scroll-hint">
+      <div class="arrow"></div>
+    </div>
+  </section>
+
+  <!-- ======================================================
+       MAIN (SIDEBAR + CARDS)
+  ====================================================== -->
+  <div id="main">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-section">
+        <div class="sidebar-title">Browse</div>
+        <a class="sidebar-item active" href="#anime-section">🔥 Trending</a>
+        <a class="sidebar-item" href="#">⭐ Popular</a>
+        <a class="sidebar-item" href="#">🆕 New Releases
+          <span class="sidebar-badge badge-new">NEW</span>
+        </a>
+        <a class="sidebar-item" href="#">📅 Seasonal
+          <span class="sidebar-badge badge-hot">HOT</span>
+        </a>
+        <a class="sidebar-item" href="#">🏆 Top Rated</a>
+        <a class="sidebar-item" href="#">🎲 Random Pick</a>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Genres</div>
+        <div class="genre-tags">
+          <span class="genre-tag">Action</span>
+          <span class="genre-tag">Romance</span>
+          <span class="genre-tag">Sci-Fi</span>
+          <span class="genre-tag">Fantasy</span>
+          <span class="genre-tag">Horror</span>
+          <span class="genre-tag">Slice of Life</span>
+          <span class="genre-tag">Mecha</span>
+          <span class="genre-tag">Isekai</span>
+          <span class="genre-tag">Sports</span>
+          <span class="genre-tag">Comedy</span>
+        </div>
+      </div>
+
+      <div class="sidebar-section">
+        <div class="sidebar-title">Quick Links</div>
+        <a class="sidebar-item" href="#anime-section">🎌 Anime</a>
+        <a class="sidebar-item" href="#movies-section">🎬 Movies</a>
+        <a class="sidebar-item" href="#music-section">🎵 Music</a>
+        <a class="sidebar-item" href="#manga-section">📚 Manga</a>
+        <a class="sidebar-item" href="#">🎮 Gaming</a>
+      </div>
+    </aside>
+
+    <!-- CARDS AREA -->
+    <main class="cards-area">
+
+      <!-- Trending row -->
+      <div class="section-header">
+        <div class="section-title">
+          <span class="accent"></span>Trending Now
+        </div>
+      </div>
+
+      <div class="trending-row">
+        <div class="trending-chip active"><span class="chip-rank">#1</span> Demon Slayer S4</div>
+        <div class="trending-chip"><span class="chip-rank">#2</span> Jujutsu Kaisen</div>
+        <div class="trending-chip"><span class="chip-rank">#3</span> Solo Leveling</div>
+        <div class="trending-chip"><span class="chip-rank">#4</span> Vinland Saga</div>
+        <div class="trending-chip"><span class="chip-rank">#5</span> Frieren</div>
+        <div class="trending-chip"><span class="chip-rank">#6</span> Dungeon Meshi</div>
+        <div class="trending-chip"><span class="chip-rank">#7</span> Blue Lock</div>
+        <div class="trending-chip"><span class="chip-rank">#8</span> Mushoku Tensei</div>
+        <div class="trending-chip"><span class="chip-rank">#9</span> Cyberpunk: Edgerunners</div>
+      </div>
+
+      <!-- Featured banner -->
+      <div class="section-header">
+        <div class="section-title">
+          <span class="accent"></span>Featured Platform
+        </div>
+      </div>
+
+      <div class="featured-banner" onclick="void(0)">
+        <!-- Gradient placeholder for banner bg -->
+        <img src="https://images.unsplash.com/photo-1578632767115-351597cf2477?w=1200&q=80" alt="Featured" loading="lazy" />
+        <div class="featured-content">
+          <span class="featured-tag">⚡ Platform Spotlight</span>
+          <div class="featured-title">Crunchyroll Premium</div>
+          <div class="featured-sub">The world's largest anime library — 40,000+ episodes, simulcasts & more</div>
+        </div>
+      </div>
+
+      <!-- ANIME SECTION -->
+      <div id="anime-section" class="section-header">
+        <div class="section-title">
+          <span class="accent"></span>🎌 Anime Streaming
+        </div>
+        <a class="section-see-all" href="#">See All →</a>
+      </div>
+
+      <div class="cards-grid">
+
+        <!-- Card: Crunchyroll -->
+        <a class="card platform-card" data-url="https://www.crunchyroll.com" data-name="Crunchyroll" href="#" style="--card-accent:#f47521; --card-shadow:rgba(244,117,33,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1613376023733-0a73315d9b06?w=400&q=75" alt="Crunchyroll" loading="lazy"/>
+            <div class="card-logo">🟠</div>
+            <span class="card-cat" style="color:#f47521;">Anime</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Crunchyroll</div>
+            <div class="card-desc">World's #1 anime streaming destination. Watch simulcasts, classics, and manga all in one place.</div>
+            <div class="card-footer">
+              <span class="card-meta">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/></svg>
+                40,000+ titles
+              </span>
+              <span class="card-cta">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card: Funimation -->
+        <a class="card platform-card" data-url="https://www.funimation.com" data-name="Funimation" href="#" style="--card-accent:#400087; --card-shadow:rgba(64,0,135,0.3);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1554595666-19ceabf46a84?w=400&q=75" alt="Funimation" loading="lazy"/>
+            <div class="card-logo">💜</div>
+            <span class="card-cat" style="color:#a855f7;">Dub</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Funimation</div>
+            <div class="card-desc">Premium anime streaming with the largest selection of English dubbed anime available anywhere.</div>
+            <div class="card-footer">
+              <span class="card-meta">🎙️ Best Dubs</span>
+              <span class="card-cta" style="color:#a855f7;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card: HiDive -->
+        <a class="card platform-card" data-url="https://www.hidive.com" data-name="HiDive" href="#" style="--card-accent:#00b4d8; --card-shadow:rgba(0,180,216,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&q=75" alt="HiDive" loading="lazy"/>
+            <div class="card-logo">🔵</div>
+            <span class="card-cat" style="color:#00b4d8;">HD</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">HiDive</div>
+            <div class="card-desc">Stream exclusive simulcasts and rare anime titles not found on any other platform. Ad-free premium.</div>
+            <div class="card-footer">
+              <span class="card-meta">🌐 Exclusive picks</span>
+              <span class="card-cta" style="color:#00b4d8;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Card: Netflix Anime -->
+        <a class="card platform-card" data-url="https://www.netflix.com/browse/genre/7424" data-name="Netflix Anime" href="#" style="--card-accent:#e50914; --card-shadow:rgba(229,9,20,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=400&q=75" alt="Netflix Anime" loading="lazy"/>
+            <div class="card-logo">🔴</div>
+            <span class="card-cat" style="color:#e50914;">Original</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Netflix Anime</div>
+            <div class="card-desc">Netflix originals like Cyberpunk: Edgerunners & Castlevania. Premium animated content worldwide.</div>
+            <div class="card-footer">
+              <span class="card-meta">🎬 Originals</span>
+              <span class="card-cta" style="color:#e50914;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+      </div><!-- /.cards-grid -->
+
+      <!-- MOVIES SECTION -->
+      <div id="movies-section" class="section-header">
+        <div class="section-title">
+          <span class="accent"></span>🎬 Movies & Shows
+        </div>
+        <a class="section-see-all" href="#">See All →</a>
+      </div>
+
+      <div class="cards-grid">
+
+        <!-- Netflix -->
+        <a class="card platform-card" data-url="https://www.netflix.com" data-name="Netflix" href="#" style="--card-accent:#e50914; --card-shadow:rgba(229,9,20,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400&q=75" alt="Netflix" loading="lazy"/>
+            <div class="card-logo">🎥</div>
+            <span class="card-cat" style="color:#e50914;">Streaming</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Netflix</div>
+            <div class="card-desc">Billions of hours of movies, TV shows, documentaries, and Netflix original productions.</div>
+            <div class="card-footer">
+              <span class="card-meta">📺 4K HDR</span>
+              <span class="card-cta" style="color:#e50914;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Disney+ -->
+        <a class="card platform-card" data-url="https://www.disneyplus.com" data-name="Disney+" href="#" style="--card-accent:#006e99; --card-shadow:rgba(0,110,153,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1506748686214-e9df14d4d9d0?w=400&q=75" alt="Disney+" loading="lazy"/>
+            <div class="card-logo">✨</div>
+            <span class="card-cat" style="color:#00b4d8;">Disney+</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Disney+</div>
+            <div class="card-desc">Marvel, Star Wars, Pixar, Disney classics. The ultimate family entertainment streaming vault.</div>
+            <div class="card-footer">
+              <span class="card-meta">⭐ Marvel & more</span>
+              <span class="card-cta" style="color:#006e99;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Prime Video -->
+        <a class="card platform-card" data-url="https://www.primevideo.com" data-name="Amazon Prime Video" href="#" style="--card-accent:#00a8e0; --card-shadow:rgba(0,168,224,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1611532736597-de2d4265fba3?w=400&q=75" alt="Prime Video" loading="lazy"/>
+            <div class="card-logo">🎞️</div>
+            <span class="card-cat" style="color:#00a8e0;">Prime</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Amazon Prime</div>
+            <div class="card-desc">Award-winning Amazon Originals, exclusive movies, and live sports events — all in one place.</div>
+            <div class="card-footer">
+              <span class="card-meta">🏆 Award winners</span>
+              <span class="card-cta" style="color:#00a8e0;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+      </div><!-- /.cards-grid -->
+
+      <!-- MUSIC SECTION -->
+      <div id="music-section" class="section-header">
+        <div class="section-title">
+          <span class="accent"></span>🎵 Music
+        </div>
+        <a class="section-see-all" href="#">See All →</a>
+      </div>
+
+      <div class="cards-grid">
+
+        <!-- Spotify -->
+        <a class="card platform-card" data-url="https://open.spotify.com" data-name="Spotify" href="#" style="--card-accent:#1db954; --card-shadow:rgba(29,185,84,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=400&q=75" alt="Spotify" loading="lazy"/>
+            <div class="card-logo">🎵</div>
+            <span class="card-cat" style="color:#1db954;">Music</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Spotify</div>
+            <div class="card-desc">100M+ songs, anime soundtracks, lo-fi beats, podcasts and exclusive artist content.</div>
+            <div class="card-footer">
+              <span class="card-meta">🎧 100M+ songs</span>
+              <span class="card-cta" style="color:#1db954;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Apple Music -->
+        <a class="card platform-card" data-url="https://music.apple.com" data-name="Apple Music" href="#" style="--card-accent:#fc3c44; --card-shadow:rgba(252,60,68,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=400&q=75" alt="Apple Music" loading="lazy"/>
+            <div class="card-logo">🍎</div>
+            <span class="card-cat" style="color:#fc3c44;">HiFi</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Apple Music</div>
+            <div class="card-desc">Lossless audio, Dolby Atmos spatial sound, and massive J-Pop / anime OST catalog.</div>
+            <div class="card-footer">
+              <span class="card-meta">🎼 Lossless audio</span>
+              <span class="card-cta" style="color:#fc3c44;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- YouTube Music -->
+        <a class="card platform-card" data-url="https://music.youtube.com" data-name="YouTube Music" href="#" style="--card-accent:#ff0000; --card-shadow:rgba(255,0,0,0.2);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400&q=75" alt="YouTube Music" loading="lazy"/>
+            <div class="card-logo">▶️</div>
+            <span class="card-cat" style="color:#ff0000;">YT Music</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">YouTube Music</div>
+            <div class="card-desc">Official music videos, anime openings, endings, and rare live recordings in one free hub.</div>
+            <div class="card-footer">
+              <span class="card-meta">🎬 With video</span>
+              <span class="card-cta" style="color:#ff0000;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+      </div><!-- /.cards-grid -->
+
+      <!-- MANGA SECTION -->
+      <div id="manga-section" class="section-header">
+        <div class="section-title">
+          <span class="accent"></span>📚 Manga & Comics
+        </div>
+        <a class="section-see-all" href="#">See All →</a>
+      </div>
+
+      <div class="cards-grid">
+
+        <!-- MangaDex -->
+        <a class="card platform-card" data-url="https://mangadex.org" data-name="MangaDex" href="#" style="--card-accent:#ff6740; --card-shadow:rgba(255,103,64,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1534447677768-be436bb09401?w=400&q=75" alt="MangaDex" loading="lazy"/>
+            <div class="card-logo">📖</div>
+            <span class="card-cat" style="color:#ff6740;">Manga</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">MangaDex</div>
+            <div class="card-desc">Free, community-driven manga reader with 100,000+ titles in dozens of languages. Legal & free.</div>
+            <div class="card-footer">
+              <span class="card-meta">🌐 Free forever</span>
+              <span class="card-cta" style="color:#ff6740;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Viz Media -->
+        <a class="card platform-card" data-url="https://www.viz.com/shonenjump" data-name="Viz Media / Shonen Jump" href="#" style="--card-accent:#ff0066; --card-shadow:rgba(255,0,102,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?w=400&q=75" alt="Viz Media" loading="lazy"/>
+            <div class="card-logo">⚡</div>
+            <span class="card-cat" style="color:#ff0066;">Official</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Viz Media</div>
+            <div class="card-desc">Official Shonen Jump digital library. Read One Piece, Naruto, Bleach, and new simulpub chapters.</div>
+            <div class="card-footer">
+              <span class="card-meta">🗞️ Simulpub</span>
+              <span class="card-cta" style="color:#ff0066;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Webtoon -->
+        <a class="card platform-card" data-url="https://www.webtoons.com" data-name="LINE Webtoon" href="#" style="--card-accent:#00d2ff; --card-shadow:rgba(0,210,255,0.25);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1555066931-4365d14431b9?w=400&q=75" alt="Webtoon" loading="lazy"/>
+            <div class="card-logo">🎨</div>
+            <span class="card-cat" style="color:#00d2ff;">Webtoon</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">LINE Webtoon</div>
+            <div class="card-desc">Vertical-scroll comics, manhwa, and original webcomics from creators worldwide. Free to read.</div>
+            <div class="card-footer">
+              <span class="card-meta">🎨 Original comics</span>
+              <span class="card-cta" style="color:#00d2ff;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+        <!-- Shonen Jump+ -->
+        <a class="card platform-card" data-url="https://shonenjumpplus.com" data-name="Shonen Jump+" href="#" style="--card-accent:#ffd700; --card-shadow:rgba(255,215,0,0.2);">
+          <div class="card-lock-overlay"><span class="lock-badge">🔒 Login to Visit</span></div>
+          <div class="card-img">
+            <img src="https://images.unsplash.com/photo-1555680202-c86f0e12f086?w=400&q=75" alt="Shonen Jump+" loading="lazy"/>
+            <div class="card-logo">⚔️</div>
+            <span class="card-cat" style="color:#ffd700;">Shonen</span>
+          </div>
+          <div class="card-body">
+            <div class="card-title">Shonen Jump+</div>
+            <div class="card-desc">Straight from Shueisha — the original source of Jujutsu Kaisen, Chainsaw Man, and new serializations.</div>
+            <div class="card-footer">
+              <span class="card-meta">🇯🇵 From Japan</span>
+              <span class="card-cta" style="color:#ffd700;">Visit →</span>
+            </div>
+          </div>
+        </a>
+
+      </div><!-- /.cards-grid -->
+
+    </main><!-- /.cards-area -->
+  </div><!-- /#main -->
+
+  <!-- ======================================================
+       FOOTER
+  ====================================================== -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <a class="nav-logo" href="#">ANI<span>VERSE</span></a>
+        <p>Your one-stop universe for all anime, movies, music, and manga. Discover, explore, and stream everything from one cyberpunk hub.</p>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Navigate</div>
+        <ul class="footer-links">
+          <li><a href="#hero">Home</a></li>
+          <li><a href="#anime-section">Anime</a></li>
+          <li><a href="#movies-section">Movies</a></li>
+          <li><a href="#music-section">Music</a></li>
+          <li><a href="#manga-section">Manga</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Platforms</div>
+        <ul class="footer-links">
+          <li><a href="#">Crunchyroll</a></li>
+          <li><a href="#">Netflix</a></li>
+          <li><a href="#">Spotify</a></li>
+          <li><a href="#">MangaDex</a></li>
+          <li><a href="#">Disney+</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <div class="footer-col-title">Follow Us</div>
+        <div class="social-icons">
+          <a class="social-icon" href="#" aria-label="Twitter">𝕏</a>
+          <a class="social-icon" href="#" aria-label="Discord">💬</a>
+          <a class="social-icon" href="#" aria-label="Instagram">📸</a>
+          <a class="social-icon" href="#" aria-label="YouTube">▶️</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>© 2026 <span>AniVerse</span> — Crafted with ⚡ for anime fans everywhere.</p>
+      <p>Not affiliated with any streaming platform · UI demo only</p>
+    </div>
+  </footer>
+
+</div><!-- /.wrapper -->
+
+<!-- ======================================================
+     AUTH MODAL
+====================================================== -->
+<div class="modal-backdrop" id="auth-modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-label="Sign In / Sign Up">
+    <button class="modal-close" id="auth-modal-close" aria-label="Close">✕</button>
+    <div class="modal-logo">ANI<span style="background:linear-gradient(135deg,#ff2d78,#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">VERSE</span></div>
+    <div class="modal-tagline">Your cyberpunk entertainment gateway</div>
+
+    <!-- Login / Signup tabs -->
+    <div class="modal-tabs">
+      <div class="modal-tab active" data-tab="login">Sign In</div>
+      <div class="modal-tab" data-tab="signup">Create Account</div>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <form class="auth-form show" id="login-form" autocomplete="on">
+      <div class="form-group">
+        <label class="form-label" for="login-email">Email</label>
+        <input class="form-input" id="login-email" type="email" placeholder="you@example.com" autocomplete="email" />
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="login-password">Password</label>
+        <input class="form-input" id="login-password" type="password" placeholder="••••••••" autocomplete="current-password" />
+        <span class="form-error" id="login-error">Invalid email or password.</span>
+      </div>
+      <button class="btn-submit" type="submit" id="login-submit">⚡ Sign In</button>
+      <div class="modal-divider">or</div>
+      <button class="btn-submit" type="button" id="demo-login"
+        style="background:linear-gradient(135deg,#0e0e1e,#1a1a30);border:1px solid rgba(255,255,255,0.1);box-shadow:none;">
+        🎌 Demo Login (no password needed)
+      </button>
+    </form>
+
+    <!-- SIGNUP FORM -->
+    <form class="auth-form" id="signup-form" autocomplete="on">
+      <div class="form-group">
+        <label class="form-label" for="signup-name">Username</label>
+        <input class="form-input" id="signup-name" type="text" placeholder="AniHero42" autocomplete="username" maxlength="24" />
+        <span class="form-error" id="signup-name-error">Username must be 3–24 characters.</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signup-email">Email</label>
+        <input class="form-input" id="signup-email" type="email" placeholder="you@example.com" autocomplete="email" />
+        <span class="form-error" id="signup-email-error">Please enter a valid email.</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="signup-password">Password</label>
+        <input class="form-input" id="signup-password" type="password" placeholder="Min. 6 characters" autocomplete="new-password" />
+        <span class="form-error" id="signup-pass-error">Password must be at least 6 characters.</span>
+      </div>
+      <button class="btn-submit" type="submit" id="signup-submit">🚀 Create Account</button>
+    </form>
+  </div>
+</div>
+
+<!-- ======================================================
+     REDIRECT CONFIRM MODAL
+====================================================== -->
+<div class="modal-backdrop" id="redirect-modal-backdrop">
+  <div class="modal redirect-modal" role="dialog" aria-modal="true">
+    <button class="modal-close" id="redirect-modal-close" aria-label="Close">✕</button>
+    <div class="redirect-icon" id="redirect-icon">🌐</div>
+    <div class="redirect-title">Opening <span id="redirect-platform-name">Platform</span></div>
+    <div class="redirect-url" id="redirect-url-display">https://...</div>
+    <div class="redirect-actions">
+      <button class="btn-redirect-go" id="redirect-go">Open Site ↗</button>
+      <button class="btn-redirect-cancel" id="redirect-cancel">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div id="toast-container"></div>
+
+<!-- ============================================================
+     JAVASCRIPT
+============================================================ -->
+<script>
+  /* ============================================================
+     PARTICLE CANVAS — background floating particles
+  ============================================================ */
+  (function initParticles() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx    = canvas.getContext('2d');
+    let W, H, particles = [];
+    const COLORS = ['#9b30ff', '#00e5ff', '#ff2d78', '#ffd700', '#00ff9d'];
+    const COUNT  = 80;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    function randBetween(a, b) { return a + Math.random() * (b - a); }
+    class Particle {
+      constructor() { this.reset(true); }
+      reset(initial) {
+        this.x = randBetween(0, W); this.y = initial ? randBetween(0, H) : H + 10;
+        this.vx = randBetween(-0.15, 0.15); this.vy = randBetween(-0.3, -0.05);
+        this.r = randBetween(0.5, 2.5); this.alpha = randBetween(0.2, 0.7);
+        this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+      }
+      update() { this.x += this.vx; this.y += this.vy; this.alpha -= 0.0005; if (this.y < -10 || this.alpha <= 0) this.reset(false); }
+      draw() { ctx.save(); ctx.globalAlpha = this.alpha; ctx.fillStyle = this.color; ctx.shadowBlur = 6; ctx.shadowColor = this.color; ctx.beginPath(); ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2); ctx.fill(); ctx.restore(); }
+    }
+    function init() { resize(); particles = Array.from({ length: COUNT }, () => new Particle()); }
+    function loop() { ctx.clearRect(0, 0, W, H); for (const p of particles) { p.update(); p.draw(); } requestAnimationFrame(loop); }
+    window.addEventListener('resize', resize);
+    init(); loop();
+  })();
+
+  /* ============================================================
+     TOAST SYSTEM
+  ============================================================ */
+  function showToast(message, type = 'info', duration = 3200) {
+    const container = document.getElementById('toast-container');
+    const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `<span class="toast-icon">${icons[type] || '💬'}</span><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.classList.add('exit');
+      toast.addEventListener('animationend', () => toast.remove());
+    }, duration);
+  }
+
+  /* ============================================================
+     AUTH SYSTEM — uses localStorage to persist sessions
+  ============================================================ */
+  const Auth = (() => {
+    const USERS_KEY   = 'aniverse_users';
+    const SESSION_KEY = 'aniverse_session';
+
+    function getUsers()   { return JSON.parse(localStorage.getItem(USERS_KEY) || '{}'); }
+    function saveUsers(u) { localStorage.setItem(USERS_KEY, JSON.stringify(u)); }
+    function getSession() { return JSON.parse(localStorage.getItem(SESSION_KEY) || 'null'); }
+    function setSession(u){ localStorage.setItem(SESSION_KEY, JSON.stringify(u)); }
+    function clearSession(){ localStorage.removeItem(SESSION_KEY); }
+
+    function register(name, email, password) {
+      const users = getUsers();
+      if (users[email]) return { ok: false, msg: 'Email already registered. Please sign in.' };
+      const user = { name, email, passwordHash: btoa(password), joined: Date.now() };
+      users[email] = user;
+      saveUsers(users);
+      setSession({ name, email });
+      return { ok: true };
+    }
+
+    function login(email, password) {
+      // Demo shortcut
+      if (email === 'demo@aniverse.io' || email === '') {
+        const demoUser = { name: 'AniGuest', email: 'demo@aniverse.io' };
+        setSession(demoUser);
+        return { ok: true };
+      }
+      const users = getUsers();
+      if (!users[email] || users[email].passwordHash !== btoa(password)) {
+        return { ok: false, msg: 'Invalid email or password.' };
+      }
+      setSession({ name: users[email].name, email });
+      return { ok: true };
+    }
+
+    function logout() { clearSession(); }
+    function current() { return getSession(); }
+
+    return { register, login, logout, current };
+  })();
+
+  /* ============================================================
+     UI STATE — update navbar based on auth status
+  ============================================================ */
+  function updateAuthUI() {
+    const user    = Auth.current();
+    const area    = document.getElementById('nav-auth-area');
+    const cards   = document.querySelectorAll('.platform-card');
+
+    if (user) {
+      // Logged in: show avatar + dropdown
+      const initials = user.name.slice(0, 2).toUpperCase();
+      area.innerHTML = `
+        <div class="nav-user" id="nav-user">
+          <div class="nav-avatar" id="nav-avatar" title="${user.name}" aria-label="User menu">${initials}</div>
+          <div class="user-dropdown" id="user-dropdown">
+            <div class="dropdown-header">
+              <div class="dropdown-username">${user.name}</div>
+              <div class="dropdown-email">${user.email}</div>
+            </div>
+            <div class="dropdown-item">👤 Profile</div>
+            <div class="dropdown-item">⭐ My Favourites</div>
+            <div class="dropdown-item">⚙️ Settings</div>
+            <div class="dropdown-item danger" id="signout-btn">🚪 Sign Out</div>
+          </div>
+        </div>`;
+
+      // Avatar dropdown toggle
+      document.getElementById('nav-avatar').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById('user-dropdown').classList.toggle('open');
+      });
+
+      document.addEventListener('click', () => {
+        const dd = document.getElementById('user-dropdown');
+        if (dd) dd.classList.remove('open');
+      });
+
+      document.getElementById('signout-btn').addEventListener('click', () => {
+        Auth.logout();
+        updateAuthUI();
+        showToast('You've been signed out. See you next time! 👋', 'info');
+      });
+
+      // Remove lock overlays when logged in
+      cards.forEach(card => {
+        const overlay = card.querySelector('.card-lock-overlay');
+        if (overlay) overlay.style.display = 'none';
+      });
+
+    } else {
+      // Logged out: show sign in button
+      area.innerHTML = `<button class="nav-auth-btn" id="open-auth-modal">⚡ Sign In</button>`;
+      document.getElementById('open-auth-modal').addEventListener('click', () => openAuthModal());
+
+      // Show lock overlays
+      cards.forEach(card => {
+        const overlay = card.querySelector('.card-lock-overlay');
+        if (overlay) overlay.style.display = '';
+      });
+    }
+  }
+
+  /* ============================================================
+     AUTH MODAL
+  ============================================================ */
+  const authBackdrop = document.getElementById('auth-modal-backdrop');
+
+  function openAuthModal(defaultTab = 'login') {
+    authBackdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    switchTab(defaultTab);
+  }
+
+  function closeAuthModal() {
+    authBackdrop.classList.remove('open');
+    document.body.style.overflow = '';
+    clearFormErrors();
+  }
+
+  document.getElementById('auth-modal-close').addEventListener('click', closeAuthModal);
+  authBackdrop.addEventListener('click', (e) => { if (e.target === authBackdrop) closeAuthModal(); });
+
+  // Tab switching
+  function switchTab(tab) {
+    document.querySelectorAll('.modal-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    document.getElementById('login-form').classList.toggle('show', tab === 'login');
+    document.getElementById('signup-form').classList.toggle('show', tab === 'signup');
+    clearFormErrors();
+  }
+
+  document.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+  });
+
+  function clearFormErrors() {
+    document.querySelectorAll('.form-error').forEach(e => e.classList.remove('show'));
+    document.querySelectorAll('.form-input').forEach(i => i.style.borderColor = '');
+  }
+
+  function showFieldError(id, inputId) {
+    document.getElementById(id).classList.add('show');
+    if (inputId) {
+      const inp = document.getElementById(inputId);
+      inp.style.borderColor = 'var(--neon-pink)';
+      inp.focus();
+    }
+  }
+
+  // LOGIN submit
+  document.getElementById('login-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearFormErrors();
+    const email    = document.getElementById('login-email').value.trim();
+    const password = document.getElementById('login-password').value;
+    const result   = Auth.login(email, password);
+    if (result.ok) {
+      closeAuthModal();
+      updateAuthUI();
+      const user = Auth.current();
+      showToast(`Welcome back, ${user.name}! ⚡`, 'success');
+    } else {
+      showFieldError('login-error', 'login-email');
+      document.getElementById('login-error').textContent = result.msg;
+    }
+  });
+
+  // DEMO LOGIN
+  document.getElementById('demo-login').addEventListener('click', () => {
+    Auth.login('demo@aniverse.io', '');
+    closeAuthModal();
+    updateAuthUI();
+    showToast('Demo mode activated! Explore freely 🎌', 'success');
+  });
+
+  // SIGNUP submit
+  document.getElementById('signup-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    clearFormErrors();
+    const name     = document.getElementById('signup-name').value.trim();
+    const email    = document.getElementById('signup-email').value.trim();
+    const password = document.getElementById('signup-password').value;
+
+    let valid = true;
+    if (name.length < 3 || name.length > 24) { showFieldError('signup-name-error', 'signup-name'); valid = false; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showFieldError('signup-email-error', 'signup-email'); valid = false; }
+    if (password.length < 6) { showFieldError('signup-pass-error', 'signup-password'); valid = false; }
+    if (!valid) return;
+
+    const result = Auth.register(name, email, password);
+    if (result.ok) {
+      closeAuthModal();
+      updateAuthUI();
+      showToast(`Account created! Welcome to AniVerse, ${name} 🚀`, 'success');
+    } else {
+      showFieldError('signup-email-error', 'signup-email');
+      document.getElementById('signup-email-error').textContent = result.msg;
+    }
+  });
+
+  /* ============================================================
+     REDIRECT MODAL — confirm before opening platform
+  ============================================================ */
+  const redirectBackdrop = document.getElementById('redirect-modal-backdrop');
+  let pendingRedirectUrl = null;
+
+  const platformIcons = {
+    'crunchyroll': '🟠', 'funimation': '💜', 'hidive': '🔵', 'netflix': '🔴',
+    'disney': '✨', 'amazon': '🎞️', 'prime': '🎞️', 'spotify': '🎵',
+    'apple': '🍎', 'youtube': '▶️', 'mangadex': '📖', 'viz': '⚡',
+    'webtoon': '🎨', 'shonen': '⚔️'
+  };
+
+  function getPlatformIcon(name) {
+    const lower = name.toLowerCase();
+    for (const [key, icon] of Object.entries(platformIcons)) {
+      if (lower.includes(key)) return icon;
+    }
+    return '🌐';
+  }
+
+  function openRedirectModal(url, platformName) {
+    pendingRedirectUrl = url;
+    document.getElementById('redirect-icon').textContent = getPlatformIcon(platformName);
+    document.getElementById('redirect-platform-name').textContent = platformName;
+    document.getElementById('redirect-url-display').textContent = url;
+    redirectBackdrop.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeRedirectModal() {
+    redirectBackdrop.classList.remove('open');
+    document.body.style.overflow = '';
+    pendingRedirectUrl = null;
+  }
+
+  document.getElementById('redirect-modal-close').addEventListener('click', closeRedirectModal);
+  document.getElementById('redirect-cancel').addEventListener('click', closeRedirectModal);
+  redirectBackdrop.addEventListener('click', (e) => { if (e.target === redirectBackdrop) closeRedirectModal(); });
+
+  document.getElementById('redirect-go').addEventListener('click', () => {
+    if (pendingRedirectUrl) {
+      window.open(pendingRedirectUrl, '_blank', 'noopener,noreferrer');
+      closeRedirectModal();
+      showToast('Opening platform in new tab 🚀', 'info', 2500);
+    }
+  });
+
+  /* ============================================================
+     CARD CLICK HANDLING — auth gate + redirect
+  ============================================================ */
+  document.querySelectorAll('.platform-card').forEach(card => {
+    card.addEventListener('click', (e) => {
+      e.preventDefault();
+      const user = Auth.current();
+      if (!user) {
+        // Not logged in → open auth modal
+        openAuthModal('login');
+        showToast('Please sign in to access platforms 🔒', 'info', 3000);
+        return;
+      }
+      const url  = card.dataset.url;
+      const name = card.dataset.name;
+      if (url && name) openRedirectModal(url, name);
+    });
+  });
+
+  /* ============================================================
+     NAVBAR — scroll active link
+  ============================================================ */
+  (function initNavbar() {
+    const sections = ['hero', 'anime-section', 'movies-section', 'music-section', 'manga-section'];
+    const links    = document.querySelectorAll('.nav-links a');
+    function onScroll() {
+      const y = window.scrollY + 100;
+      let current = 'hero';
+      for (const id of sections) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= y) current = id;
+      }
+      links.forEach(a => {
+        const href = a.getAttribute('href').replace('#', '');
+        a.classList.toggle('active', href === current);
+      });
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+
+  /* ============================================================
+     MOBILE NAV TOGGLE
+  ============================================================ */
+  (function initMobileNav() {
+    const btn    = document.getElementById('nav-toggle');
+    const drawer = document.getElementById('nav-mobile');
+    const spans  = btn.querySelectorAll('span');
+    let open = false;
+    btn.addEventListener('click', () => {
+      open = !open;
+      drawer.classList.toggle('open', open);
+      if (open) { spans[0].style.transform = 'rotate(45deg) translate(5px, 5px)'; spans[1].style.opacity = '0'; spans[2].style.transform = 'rotate(-45deg) translate(5px, -5px)'; }
+      else { spans[0].style.transform = ''; spans[1].style.opacity = ''; spans[2].style.transform = ''; }
+    });
+    drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+      open = false; drawer.classList.remove('open');
+      spans.forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
+    }));
+  })();
+
+  /* ============================================================
+     TRENDING CHIPS — active toggle
+  ============================================================ */
+  document.querySelectorAll('.trending-chip').forEach(chip => {
+    chip.addEventListener('click', function() {
+      document.querySelectorAll('.trending-chip').forEach(c => c.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  /* ============================================================
+     SIDEBAR ITEMS — active toggle
+  ============================================================ */
+  document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', function() {
+      document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  /* ============================================================
+     SCROLL-REVEAL — cards animate when entering viewport
+  ============================================================ */
+  (function initReveal() {
+    if (!('IntersectionObserver' in window)) return;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) { entry.target.style.animationPlayState = 'running'; obs.unobserve(entry.target); }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.card, .featured-banner').forEach(el => {
+      el.style.animationPlayState = 'paused';
+      obs.observe(el);
+    });
+  })();
+
+  /* ============================================================
+     GENRE TAGS — toggle highlight
+  ============================================================ */
+  document.querySelectorAll('.genre-tag').forEach(tag => {
+    tag.addEventListener('click', function() {
+      this.classList.toggle('genre-active');
+      if (this.classList.contains('genre-active')) {
+        this.style.borderColor = 'var(--neon-cyan)'; this.style.color = 'var(--neon-cyan)'; this.style.background = 'rgba(0,229,255,0.08)';
+      } else { this.style.borderColor = ''; this.style.color = ''; this.style.background = ''; }
+    });
+  });
+
+  /* ============================================================
+     KEYBOARD SHORTCUTS — ESC closes modals
+  ============================================================ */
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeAuthModal();
+      closeRedirectModal();
+    }
+  });
+
+  /* ============================================================
+     INIT — run on page load
+  ============================================================ */
+  updateAuthUI();
+
+  // If already logged in, greet the user
+  const existingUser = Auth.current();
+  if (existingUser) {
+    setTimeout(() => showToast(`Welcome back, ${existingUser.name}! 🎌`, 'success', 2800), 600);
+  }
+
+</script>
+</body>
+</html>
